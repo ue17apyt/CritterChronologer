@@ -7,26 +7,29 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.List;
 
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
+@Table(name = "customer")
 public class Customer {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(nullable = false, unique = true)
+    @Column(name = "ID", nullable = false, unique = true)
     private Long id;
 
     @Nationalized
-    @Column(nullable = false, length = 127)
+    @Column(name = "name", nullable = false, length = 127)
     private String name;
 
+    @Column(name = "PHONE_NO", length = 31)
     private String phoneNumber;
 
-    @Column(length = 1023)
+    @Column(name = "NOTES", length = 1023)
     private String notes;
 
     @OneToMany(mappedBy = "customer", cascade = ALL, orphanRemoval = true)

@@ -8,7 +8,9 @@ import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.LocalDate;
 
 import static javax.persistence.EnumType.STRING;
@@ -16,26 +18,30 @@ import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
+@Table(name = "pet")
 public class Pet {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(nullable = false, unique = true)
+    @Column(name = "ID", nullable = false, unique = true)
     private Long id;
 
     @Nationalized
-    @Column(nullable = false, length = 63)
+    @Column(name = "NAME", nullable = false, length = 63)
     private String name;
 
     @Enumerated(STRING)
+    @Column(name = "TYPE")
     private PetType type;
 
     @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "CUSTOMER_ID")
     private Customer owner;
 
+    @Column(name = "BIRTH_DATE")
     private LocalDate birthDate;
 
-    @Column(length = 1023)
+    @Column(name = "NOTES", length = 1023)
     private String notes;
 
     public Long getId() {

@@ -9,6 +9,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -18,13 +19,15 @@ import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
+@Table(name = "schedule")
 public class Schedule {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(nullable = false, unique = true)
+    @Column(name = "ID", nullable = false, unique = true)
     private Long id;
 
+    @Column(name = "DATE")
     private LocalDate date;
 
     @ManyToMany(cascade = ALL)
@@ -35,6 +38,7 @@ public class Schedule {
 
     @ElementCollection
     @Enumerated(STRING)
+    @Column(name = "ACTIVITIES")
     private Set<EmployeeSkill> activities;
 
     public Long getId() {
