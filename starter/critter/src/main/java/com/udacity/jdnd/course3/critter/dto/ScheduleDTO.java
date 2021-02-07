@@ -12,11 +12,19 @@ import java.util.Set;
  */
 public class ScheduleDTO {
 
-    private Long id;
+    private long id;
     private LocalDate date;
     private List<Long> employeeIds;
     private List<Long> petIds;
     private Set<EmployeeSkill> activities;
+
+    public long getId() {
+        return this.id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public LocalDate getDate() {
         return this.date;

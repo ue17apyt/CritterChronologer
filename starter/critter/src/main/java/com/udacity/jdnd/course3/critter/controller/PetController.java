@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.beans.BeanUtils.copyProperties;
@@ -34,7 +35,16 @@ public class PetController {
 
     @PostMapping
     public PetDTO savePet(@RequestBody PetDTO petDTO) {
-        return convertPetToPetDto(this.petService.savePet(convertPetDtoToPet(petDTO)));
+        Pet pet = this.petService.savePet(convertPetDtoToPet(petDTO));
+        if (petDTO.getOwnerId() != 0L) {
+            Customer owner = this.customerService.findCustomerById(petDTO.getOwnerId());
+            List<Pet> pets = ofNullable(owner.getPets()).orElse(emptyList());
+            pets.add(pet);
+            owner.setPets(pets);
+            this.customerService.saveCustomer(owner);
+        }
+        petDTO.setId(pet.getId());
+        return petDTO;
     }
 
     @GetMapping("/{petId}")
@@ -43,7 +53,7 @@ public class PetController {
     }
 
     @GetMapping
-    public List<PetDTO> getPets(){
+    public List<PetDTO> getPets() {
         return this.petService.findAllPets().stream().map(this::convertPetToPetDto).collect(toList());
     }
 
@@ -54,17 +64,17 @@ public class PetController {
 
     private Pet convertPetDtoToPet(PetDTO petDTO) {
         Pet pet = new Pet();
-        petDTO.setId(pet.getId());
         copyProperties(petDTO, pet);
-        Customer owner = this.customerService.findCustomerById(petDTO.getOwnerId());
+        if (petDTO.getOwnerId() != 0L) {
+            pet.setOwner(this.customerService.findCustomerById(petDTO.getOwnerId()));
+        }
         return pet;
     }
 
     private PetDTO convertPetToPetDto(Pet pet) {
         PetDTO petDTO = new PetDTO();
         copyProperties(pet, petDTO);
-        Long ownerId = ofNullable(pet.getOwner()).map(Customer::getId).orElse(Long.valueOf(0));
-        petDTO.setOwnerId(ownerId);
+        petDTO.setOwnerId(ofNullable(pet.getOwner()).map(Customer::getId).orElse(0L));
         return petDTO;
     }
 

@@ -9,7 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import java.time.DayOfWeek;
 import java.util.Set;
 
@@ -17,26 +16,21 @@ import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
-@Table(name = "employee")
 public class Employee {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "ID", nullable = false, unique = true)
     private Long id;
 
     @Nationalized
-    @Column(name = "NAME", nullable = false, length = 127)
+    @Column(nullable = false, length = 127)
     private String name;
 
-    @ElementCollection
+    @ElementCollection(targetClass = EmployeeSkill.class)
     @Enumerated(STRING)
-    @Column(name = "SKILLS")
     private Set<EmployeeSkill> skills;
 
-    @ElementCollection
-    @Enumerated(STRING)
-    @Column(name = "DAYS_AVAILABLE")
+    @ElementCollection(targetClass = DayOfWeek.class)
     private Set<DayOfWeek> daysAvailable;
 
     public Long getId() {

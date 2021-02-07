@@ -9,9 +9,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 
-import static java.util.Collections.emptyList;
-import static java.util.Optional.ofNullable;
-
 @Transactional
 @Service
 public class CustomerService {
@@ -20,7 +17,7 @@ public class CustomerService {
     private CustomerRepository customerRepository;
 
     public List<Customer> findAllCustomers() {
-        return ofNullable(this.customerRepository.findAll()).orElse(emptyList());
+        return this.customerRepository.findAll();
     }
 
     public Customer findCustomerById(Long customerId) {
@@ -29,9 +26,7 @@ public class CustomerService {
     }
 
     public Customer saveCustomer(Customer customer) {
-        return this.customerRepository.save(
-                ofNullable(customer).orElseThrow(() -> new ObjectNotFoundException("Customer does not exist"))
-        );
+        return this.customerRepository.save(customer);
     }
 
 }

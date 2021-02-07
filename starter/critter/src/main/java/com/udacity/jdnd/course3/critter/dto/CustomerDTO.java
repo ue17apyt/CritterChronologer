@@ -8,17 +8,17 @@ import java.util.List;
  */
 public class CustomerDTO {
 
-    private Long id;
+    private long id;
     private String name;
     private String phoneNumber;
     private String notes;
     private List<Long> petIds;
 
-    public Long getId() {
+    public long getId() {
         return this.id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 

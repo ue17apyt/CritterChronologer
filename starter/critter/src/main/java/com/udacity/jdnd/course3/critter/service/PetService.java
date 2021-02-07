@@ -1,6 +1,5 @@
 package com.udacity.jdnd.course3.critter.service;
 
-import com.udacity.jdnd.course3.critter.entity.Customer;
 import com.udacity.jdnd.course3.critter.entity.Pet;
 import com.udacity.jdnd.course3.critter.exception.ObjectNotFoundException;
 import com.udacity.jdnd.course3.critter.repository.PetRepository;
@@ -9,10 +8,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-
-import static java.util.Collections.emptyList;
-import static java.util.Objects.nonNull;
-import static java.util.Optional.ofNullable;
 
 @Transactional
 @Service
@@ -25,11 +20,11 @@ public class PetService {
     private CustomerService customerService;
 
     public List<Pet> findAllPets() {
-        return ofNullable(this.petRepository.findAll()).orElse(emptyList());
+        return this.petRepository.findAll();
     }
 
     public List<Pet> findAllPetsByIds(List<Long> petIds) {
-        return ofNullable(this.petRepository.findAllById(ofNullable(petIds).orElse(emptyList()))).orElse(emptyList());
+        return this.petRepository.findAllById(petIds);
     }
 
     public Pet findPetById(Long petId) {
@@ -38,17 +33,10 @@ public class PetService {
     }
 
     public List<Pet> findAllPetsByOwnerId(Long ownerId) {
-        return ofNullable(this.customerService.findCustomerById(ownerId)).map(Customer::getPets).orElse(emptyList());
+        return this.petRepository.findByOwnerId(ownerId);
     }
 
     public Pet savePet(Pet pet) {
-        Customer owner = ofNullable(pet).map(Pet::getOwner)
-                .orElseThrow(() -> new ObjectNotFoundException("Pet does not exist"));
-        if(nonNull(owner)) {
-            List<Pet> pets = ofNullable(owner.getPets()).orElse(emptyList());
-            pets.add(pet);
-            owner.setPets(pets);
-        }
         return this.petRepository.save(pet);
     }
 

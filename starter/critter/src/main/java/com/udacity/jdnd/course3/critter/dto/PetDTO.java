@@ -10,18 +10,18 @@ import java.time.LocalDate;
  */
 public class PetDTO {
 
-    private Long id;
+    private long id;
     private String name;
     private PetType type;
     private long ownerId;
     private LocalDate birthDate;
     private String notes;
 
-    public Long getId() {
+    public long getId() {
         return this.id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 

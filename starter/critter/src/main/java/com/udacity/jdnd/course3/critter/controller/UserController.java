@@ -6,6 +6,7 @@ import com.udacity.jdnd.course3.critter.dto.EmployeeRequestDTO;
 import com.udacity.jdnd.course3.critter.entity.Customer;
 import com.udacity.jdnd.course3.critter.entity.Employee;
 import com.udacity.jdnd.course3.critter.entity.Pet;
+import com.udacity.jdnd.course3.critter.exception.ObjectNotFoundException;
 import com.udacity.jdnd.course3.critter.service.CustomerService;
 import com.udacity.jdnd.course3.critter.service.EmployeeService;
 import com.udacity.jdnd.course3.critter.service.PetService;
@@ -29,7 +30,7 @@ import static org.springframework.beans.BeanUtils.copyProperties;
 
 /**
  * Handles web requests related to Users.
- *
+ * <p>
  * Includes requests for both customers and employees. Splitting this into separate user and customer controllers
  * would be fine too, though that is not part of the required scope for this class.
  */
@@ -47,31 +48,31 @@ public class UserController {
     private EmployeeService employeeService;
 
     @PostMapping("/customer")
-    public CustomerDTO saveCustomer(@RequestBody CustomerDTO customerDTO){
-       return convertCustomerToCustomerDto(
-               this.customerService.saveCustomer(convertCustomerDtoToCustomer(customerDTO))
-       );
+    public CustomerDTO saveCustomer(@RequestBody CustomerDTO customerDTO) {
+        Customer customer = this.customerService.saveCustomer(convertCustomerDtoToCustomer(customerDTO));
+        customerDTO.setId(customer.getId());
+        return customerDTO;
     }
 
     @GetMapping("/customer")
-    public List<CustomerDTO> getAllCustomers(){
+    public List<CustomerDTO> getAllCustomers() {
         return this.customerService.findAllCustomers().stream()
                 .map(this::convertCustomerToCustomerDto)
                 .collect(toList());
     }
 
     @GetMapping("/customer/pet/{petId}")
-    public CustomerDTO getOwnerByPet(@PathVariable long petId){
+    public CustomerDTO getOwnerByPet(@PathVariable long petId) {
         return ofNullable(this.petService.findPetById(petId).getOwner())
                 .map(this::convertCustomerToCustomerDto)
-                .orElse(new CustomerDTO());
+                .orElseThrow(() -> new ObjectNotFoundException("Owner does not exist"));
     }
 
     @PostMapping("/employee")
     public EmployeeDTO saveEmployee(@RequestBody EmployeeDTO employeeDTO) {
-        return convertEmployeeToEmployeeDto(
-                this.employeeService.saveEmployee(convertEmployeeDtoToEmployee(employeeDTO))
-        );
+        Employee employee = this.employeeService.saveEmployee(convertEmployeeDtoToEmployee(employeeDTO));
+        employeeDTO.setId(employee.getId());
+        return employeeDTO;
     }
 
     @PostMapping("/employee/{employeeId}")
@@ -96,7 +97,6 @@ public class UserController {
 
     private Customer convertCustomerDtoToCustomer(CustomerDTO customerDTO) {
         Customer customer = new Customer();
-        customerDTO.setId(customer.getId());
         copyProperties(customerDTO, customer);
         List<Long> petIds = ofNullable(customerDTO.getPetIds()).orElse(emptyList());
         customer.setPets(this.petService.findAllPetsByIds(petIds));
@@ -107,7 +107,7 @@ public class UserController {
         CustomerDTO customerDTO = new CustomerDTO();
         copyProperties(customer, customerDTO);
         List<Long> petIds = ofNullable(customer.getPets())
-                .orElse(emptyList())
+                .orElse(null)
                 .stream()
                 .map(Pet::getId)
                 .collect(toList());
@@ -117,7 +117,6 @@ public class UserController {
 
     private Employee convertEmployeeDtoToEmployee(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();
-        employeeDTO.setId(employee.getId());
         copyProperties(employeeDTO, employee);
         return employee;
     }

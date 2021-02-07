@@ -11,16 +11,16 @@ import java.util.Set;
  */
 public class EmployeeDTO {
 
-    private Long id;
+    private long id;
     private String name;
     private Set<EmployeeSkill> skills;
     private Set<DayOfWeek> daysAvailable;
 
-    public Long getId() {
+    public long getId() {
         return this.id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 

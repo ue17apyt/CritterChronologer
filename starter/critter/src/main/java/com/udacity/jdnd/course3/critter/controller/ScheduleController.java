@@ -40,9 +40,9 @@ public class ScheduleController {
 
     @PostMapping
     public ScheduleDTO createSchedule(@RequestBody ScheduleDTO scheduleDTO) {
-        return convertScheduleToScheduleDto(
-                this.scheduleService.saveSchedule(convertScheduleDtoToSchedule(scheduleDTO))
-        );
+        Schedule schedule = this.scheduleService.saveSchedule(convertScheduleDtoToSchedule(scheduleDTO));
+        scheduleDTO.setId(schedule.getId());
+        return scheduleDTO;
     }
 
     @GetMapping
@@ -94,12 +94,12 @@ public class ScheduleController {
         ScheduleDTO scheduleDTO = new ScheduleDTO();
         copyProperties(schedule, scheduleDTO);
         List<Long> petIds = ofNullable(schedule.getPets())
-                .orElse(emptyList())
+                .orElse(null)
                 .stream().map(Pet::getId)
                 .collect(toList());
         scheduleDTO.setPetIds(petIds);
         List<Long> employeeIds = ofNullable(schedule.getEmployees())
-                .orElse(emptyList())
+                .orElse(null)
                 .stream()
                 .map(Employee::getId)
                 .collect(toList());

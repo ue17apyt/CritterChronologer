@@ -12,9 +12,7 @@ import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Set;
 
-import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
-import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
 @Transactional
@@ -25,9 +23,7 @@ public class EmployeeService {
     private EmployeeRepository employeeRepository;
 
     public List<Employee> findAllEmployeesByIds(List<Long> employeeIds) {
-        return ofNullable(
-                this.employeeRepository.findAllById(ofNullable(employeeIds).orElse(emptyList()))
-        ).orElse(emptyList());
+        return this.employeeRepository.findAllById(employeeIds);
     }
 
     public Employee findEmployeeById(Long employeeId) {
@@ -36,8 +32,7 @@ public class EmployeeService {
     }
 
     public List<Employee> findEmployeesBySkillsAndDaysAvailable(Set<EmployeeSkill> skills, DayOfWeek dayOfWeek) {
-        return ofNullable(this.employeeRepository.findByDaysAvailableContains(dayOfWeek))
-                .orElse(emptyList())
+        return this.employeeRepository.findByDaysAvailableContaining(dayOfWeek)
                 .stream()
                 .filter(employee -> nonNull(employee))
                 .filter(employee -> nonNull(employee.getSkills()))
@@ -46,9 +41,7 @@ public class EmployeeService {
     }
 
     public Employee saveEmployee(Employee employee) {
-        return this.employeeRepository.save(
-                ofNullable(employee).orElseThrow(() -> new ObjectNotFoundException("Employee does not exist"))
-        );
+        return this.employeeRepository.save(employee);
     }
 
 }
