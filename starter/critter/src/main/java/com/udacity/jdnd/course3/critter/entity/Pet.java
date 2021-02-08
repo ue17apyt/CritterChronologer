@@ -29,7 +29,7 @@ public class Pet {
     @Enumerated(STRING)
     private PetType type;
 
-    @ManyToOne(targetEntity = Customer.class, fetch = LAZY)
+    @ManyToOne(fetch = LAZY)
     private Customer owner;
 
     private LocalDate birthDate;

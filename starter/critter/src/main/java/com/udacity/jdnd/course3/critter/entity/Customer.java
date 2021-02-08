@@ -31,7 +31,7 @@ public class Customer {
     @Column(length = 1023)
     private String notes;
 
-    @OneToMany(mappedBy = "owner", targetEntity = Pet.class, fetch = LAZY, cascade = ALL)
+    @OneToMany(mappedBy = "owner", fetch = LAZY, cascade = ALL)
     private List<Pet> pets;
 
     public Long getId() {

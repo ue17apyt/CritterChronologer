@@ -26,10 +26,10 @@ public class Schedule {
 
     private LocalDate date;
 
-    @ManyToMany(targetEntity = Employee.class, fetch = LAZY, cascade = ALL)
+    @ManyToMany(fetch = LAZY, cascade = ALL)
     private List<Employee> employees;
 
-    @ManyToMany(targetEntity = Pet.class, fetch = LAZY, cascade = ALL)
+    @ManyToMany(fetch = LAZY, cascade = ALL)
     private List<Pet> pets;
 
     @ElementCollection

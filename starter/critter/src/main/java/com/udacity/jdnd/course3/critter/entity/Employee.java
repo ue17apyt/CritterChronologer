@@ -26,11 +26,11 @@ public class Employee {
     @Column(nullable = false, length = 127)
     private String name;
 
-    @ElementCollection(targetClass = EmployeeSkill.class)
+    @ElementCollection
     @Enumerated(STRING)
     private Set<EmployeeSkill> skills;
 
-    @ElementCollection(targetClass = DayOfWeek.class)
+    @ElementCollection
     private Set<DayOfWeek> daysAvailable;
 
     public Long getId() {

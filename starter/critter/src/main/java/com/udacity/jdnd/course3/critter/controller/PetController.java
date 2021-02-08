@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.beans.BeanUtils.copyProperties;
@@ -35,16 +34,7 @@ public class PetController {
 
     @PostMapping
     public PetDTO savePet(@RequestBody PetDTO petDTO) {
-        Pet pet = this.petService.savePet(convertPetDtoToPet(petDTO));
-        if (petDTO.getOwnerId() != 0L) {
-            Customer owner = this.customerService.findCustomerById(petDTO.getOwnerId());
-            List<Pet> pets = ofNullable(owner.getPets()).orElse(emptyList());
-            pets.add(pet);
-            owner.setPets(pets);
-            this.customerService.saveCustomer(owner);
-        }
-        petDTO.setId(pet.getId());
-        return petDTO;
+        return convertPetToPetDto(this.petService.savePet(convertPetDtoToPet(petDTO)));
     }
 
     @GetMapping("/{petId}")
